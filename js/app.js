@@ -1239,9 +1239,7 @@ function acceptDailyChallenge() {
   const ch = getDailyChallenge();
 
   // Set training mode
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  const modeBtn = document.querySelector(`.mode-btn[data-mode="${ch.mode}"]`);
-  if (modeBtn) { modeBtn.classList.add('active'); currentMode = ch.mode; }
+  selectMode(ch.mode);
 
   // Set time
   const timeEl = document.getElementById('sel-time');
@@ -1253,14 +1251,14 @@ function acceptDailyChallenge() {
 
   // Set equipment — bodyweight only
   document.querySelectorAll('#equipment-chips input[type="checkbox"]').forEach(cb => {
-    cb.checked = cb.value === 'Bodyweight only';
+    cb.checked = cb.value === 'No equipment';
   });
   updateShopRow();
 
   // Scroll to form and generate
   const form = document.getElementById('form');
   if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  setTimeout(() => document.getElementById('generate-btn')?.click(), 600);
+  setTimeout(() => document.getElementById('gen-btn')?.click(), 600);
 
   if (typeof gtag !== 'undefined') gtag('event', 'daily_challenge_accepted', { event_category: 'engagement' });
 }
