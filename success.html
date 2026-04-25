@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HomeWOD Pro — You're in!</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-281ZTL03FV"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-281ZTL03FV')
+</script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f5f0;
+  --black: #111111;
+  --white: #ffffff;
+  --red: #d63a2a;
+  --red-dark: #b22e20;
+  --gray: #e8e5de;
+  --border: rgba(0,0,0,0.1);
+  --muted: #888880;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--black);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* HEADER */
+header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.04em;
+  color: var(--black);
+  text-decoration: none;
+}
+.logo span { color: var(--red); }
+
+.pro-badge {
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* HERO */
+.hero {
+  background: var(--black);
+  color: var(--white);
+  padding: 5rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.hero-check { margin-bottom: 0.5rem; }
+
+.circle-anim {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: circle 0.6s ease forwards;
+}
+
+.check-anim {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: check 0.4s 0.6s ease forwards;
+}
+
+@keyframes circle { to { stroke-dashoffset: 0; } }
+@keyframes check  { to { stroke-dashoffset: 0; } }
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.hero p {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  max-width: 380px;
+}
+
+/* FEATURES */
+.features {
+  background: var(--bg);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.features-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.04em;
+  color: var(--black);
+  margin-bottom: 2rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.card-icon { font-size: 32px; margin-bottom: 0.75rem; display: block; }
+
+.card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 0.5rem;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* CTA */
+.cta {
+  background: var(--black);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.cta-btn {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.08em;
+  padding: 18px 40px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+.cta-btn:hover { background: var(--red-dark); }
+
+.cta-note {
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .cards { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 44px; }
+  .hero p { font-size: 16px; }
+  .cta-btn { width: 100%; display: block; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo">Home<span>WOD</span></a>
+  <span class="pro-badge">PRO</span>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-check">
+    <svg viewBox="0 0 52 52" style="width:80px;height:80px">
+      <circle cx="26" cy="26" r="25" fill="none" stroke="#d63a2a" stroke-width="2" class="circle-anim"/>
+      <path fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" d="M14 27 L22 35 L38 19" class="check-anim"/>
+    </svg>
+  </div>
+  <h1>You're in.</h1>
+  <p>HomeWOD Pro is now unlocked.</p>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-heading">What you just unlocked</div>
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">📅</span>
+      <div class="card-title">Weekly Programs</div>
+      <p class="card-desc">Full Mon–Sat progressive programming tailored to your goals. Never wonder what to do next.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📚</span>
+      <div class="card-title">Unlimited History</div>
+      <p class="card-desc">Save and revisit every workout you've ever generated. Track your progress over time.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">⚡</span>
+      <div class="card-title">Priority Generation</div>
+      <p class="card-desc">Faster workout generation and advanced training options for serious athletes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <a href="/?pro=true" class="cta-btn">Generate your first Pro WOD →</a>
+  <p class="cta-note">Questions? Email us at hello@homewod.fit</p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Set Pro status immediately
+  localStorage.setItem('homewod_pro', 'true');
+  localStorage.setItem('homewod_pro_since', new Date().toISOString());
+
+  // Get session ID from URL
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+
+  if (sessionId) {
+    localStorage.setItem('homewod_session_id', sessionId);
+
+    // Verify with backend
+    fetch('/api/verify-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.verified) {
+        console.log('✅ Payment verified:', data.email);
+        if (data.email) {
+          localStorage.setItem('homewod_pro_email', data.email);
+        }
+      }
+    })
+    .catch(err => {
+      console.log('Verify error:', err);
+      // Pro status already set above — this is just extra confirmation
+    });
+  }
+
+  // Track conversion
+  fetch('/api/analytics', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event: 'pro_conversion',
+      timestamp: Date.now()
+    })
+  }).catch(() => {});
+  // Silent fail — analytics should never break the page
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "homewod",
+  "version": "1.0.0",
+  "dependencies": {
+    "@upstash/redis": "^1.34.0",
+    "resend": "^3.0.0",
+    "stripe": "^22.0.2"
+  }
+}

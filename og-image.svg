@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#111111"/>
+  <rect x="0" y="576" width="1200" height="4" fill="#d63a2a"/>
+  <text x="600" y="268"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="128"
+    font-weight="900"
+    letter-spacing="6"
+    fill="#ffffff"
+    text-anchor="middle">HOME<tspan fill="#d63a2a">WOD</tspan></text>
+  <text x="600" y="346"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="400"
+    letter-spacing="8"
+    fill="rgba(255,255,255,0.55)"
+    text-anchor="middle">FREE AI WORKOUT GENERATOR</text>
+  <text x="600" y="406"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="20"
+    font-weight="300"
+    fill="rgba(255,255,255,0.3)"
+    text-anchor="middle">Personalized home gym workouts · Generated in seconds</text>
+  <rect x="480" y="450" width="240" height="2" fill="#d63a2a" rx="1"/>
+  <text x="600" y="526"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="18"
+    fill="rgba(255,255,255,0.25)"
+    text-anchor="middle">homewod.vercel.app</text>
+</svg>

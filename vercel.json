@@ -1,0 +1,81 @@
+{
+  "alias": ["homewod.fit", "www.homewod.fit"],
+  "functions": {
+    "api/generate.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/program.js": {
+      "memory": 256,
+      "maxDuration": 30
+    },
+    "api/webhook.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/checkout.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/verify-session.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/email-wod.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/subscribe.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/unsubscribe.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/cron-daily-wod.js": {
+      "memory": 512,
+      "maxDuration": 60
+    },
+    "api/cron-weekly-program.js": {
+      "memory": 512,
+      "maxDuration": 60
+    },
+    "api/analytics.js": {
+      "memory": 128,
+      "maxDuration": 5
+    },
+    "api/wod.js": {
+      "memory": 128,
+      "maxDuration": 5
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron-daily-wod",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron-weekly-program",
+      "schedule": "0 7 * * 1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/success",
+      "destination": "/success.html"
+    },
+    {
+      "source": "/program",
+      "destination": "/program.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/w/:id",
+      "destination": "/api/wod?id=:id"
+    }
+  ]
+}

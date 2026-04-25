@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HomeWOD — Weekly Program Generator</title>
+<meta name="description" content="Get a full week of personalised home gym training — free. Built around your equipment, goals and schedule. No signup required.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:title" content="HomeWOD — Weekly Program Generator">
+<meta property="og:description" content="Get a full Mon–Sat training program built around progressive overload. Free, every week.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-281ZTL03FV"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-281ZTL03FV')
+</script>
+<style>
+/* ─── PROGRAM PAGE OVERRIDES ─── */
+
+/* Program hero uses the dark design system from style.css */
+.program-hero {
+  background: var(--bg);
+  color: var(--warm-white);
+  padding: 4rem 1.5rem 3rem;
+  border-bottom: 0.5px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.program-hero::before {
+  content: 'PLAN';
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 200px;
+  color: rgba(255,255,255,0.025);
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.75rem;
+  display: block;
+  /* Override animation from hero page — program page doesn't do staggered entry */
+  opacity: 1;
+  animation: none;
+}
+
+.program-hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 14vw, 100px);
+  letter-spacing: 0.03em;
+  line-height: 0.92;
+  color: var(--warm-white);
+  margin-bottom: 1rem;
+}
+
+.program-hero p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+  max-width: 340px;
+  font-weight: 300;
+}
+
+/* Print styles */
+@media print {
+  header, .program-hero, .program-form, .program-actions,
+  .email-program-panel, .weekly-subscribe-banner, .recent-programs-section,
+  .mission-section, footer { display: none !important; }
+  .program-output { display: block !important; }
+  .day-body { display: block !important; }
+  body { background: white; color: black; }
+  .day-header { cursor: default; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .day-header { flex-wrap: wrap; gap: 6px; min-height: 54px; }
+  .day-focus-label { display: none; }
+  .days-btn { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <a href="/" class="nav-back-link">← <span class="nav-program-text">Generator</span></a>
+  </div>
+  <div style="position:absolute;left:50%;transform:translateX(-50%);">
+    <a href="/" style="text-decoration:none;"><div class="logo">Home<span>WOD</span></div></a>
+  </div>
+  <div class="header-right">
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="support-btn">☕ <span class="support-text">Support</span></a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="program-hero">
+  <span class="hero-eyebrow">Weekly Programming</span>
+  <h1>Plan your<br>week.</h1>
+  <p>Tell us your goal and equipment. Get a full Mon–Sat program built around progressive overload — free, every week.</p>
+</section>
+
+<!-- FORM -->
+<div class="program-form reveal">
+
+  <!-- TRAINING MODE -->
+  <div class="form-section mode-section">
+    <span class="form-label">Training mode</span>
+    <div class="mode-grid">
+      <button type="button" class="mode-card" data-mode="crossfit" onclick="selectProgramMode('crossfit')">
+        <span class="mode-icon">🏋️</span>
+        <span class="mode-name">CrossFit Athlete</span>
+        <span class="mode-desc">WODs, AMRAPs, EMOMs</span>
+      </button>
+      <button type="button" class="mode-card selected" data-mode="general" onclick="selectProgramMode('general')">
+        <span class="mode-icon">💪</span>
+        <span class="mode-name">General Fitness</span>
+        <span class="mode-desc">Straightforward workouts</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="beginner" onclick="selectProgramMode('beginner')">
+        <span class="mode-icon">🌱</span>
+        <span class="mode-name">Complete Beginner</span>
+        <span class="mode-desc">Simple, no jargon</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="lowimpact" onclick="selectProgramMode('lowimpact')">
+        <span class="mode-icon">🧘</span>
+        <span class="mode-name">Low Impact &amp; Mobility</span>
+        <span class="mode-desc">Easy on the joints</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GOAL -->
+  <div class="form-section">
+    <span class="form-label">Primary goal</span>
+    <select class="form-select" id="sel-goal" style="width:100%">
+      <option value="general">Get fitter overall</option>
+      <option value="strength">Build strength</option>
+      <option value="conditioning">Improve conditioning</option>
+      <option value="weight">Lose weight</option>
+      <option value="competition">Train for competition</option>
+      <option value="mobility">Improve mobility</option>
+    </select>
+  </div>
+
+  <!-- DAYS PER WEEK -->
+  <div class="form-section">
+    <span class="form-label">Days per week</span>
+    <div class="days-toggle">
+      <button class="days-btn" data-days="3" onclick="setDays(3)">3 days</button>
+      <button class="days-btn selected" data-days="4" onclick="setDays(4)">4 days</button>
+      <button class="days-btn" data-days="5" onclick="setDays(5)">5 days</button>
+    </div>
+  </div>
+
+  <!-- START DAY -->
+  <div class="form-section">
+    <span class="form-label">Start from</span>
+    <div class="start-day-toggle" id="start-day-toggle">
+      <button class="start-btn active" id="btn-start-today" onclick="setStartDay('today')">
+        Today — <span id="today-day-name">Monday</span>
+      </button>
+      <button class="start-btn" id="btn-start-monday" onclick="setStartDay('monday')">
+        Next Monday
+      </button>
+    </div>
+  </div>
+
+  <!-- SESSION LENGTH -->
+  <div class="form-section">
+    <span class="form-label">Session length</span>
+    <select class="form-select" id="sel-time" style="width:100%">
+      <option value="30">30 minutes</option>
+      <option value="45" selected>45 minutes</option>
+      <option value="60">60 minutes</option>
+      <option value="75">75 minutes</option>
+    </select>
+  </div>
+
+  <!-- EQUIPMENT -->
+  <div class="form-section">
+    <span class="form-label">Equipment available</span>
+    <div class="chips" id="equipment-chips">
+      <input type="checkbox" class="chip-toggle" id="eq-barbell" value="Barbell + plates">
+      <label class="chip-label" for="eq-barbell">Barbell + plates</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-kb" value="Kettlebells">
+      <label class="chip-label" for="eq-kb">Kettlebells</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-db" value="Dumbbells">
+      <label class="chip-label" for="eq-db">Dumbbells</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-pullup" value="Pull-up bar">
+      <label class="chip-label" for="eq-pullup">Pull-up bar</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-jumprope" value="Jump rope">
+      <label class="chip-label" for="eq-jumprope">Jump rope</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-bands" value="Resistance bands">
+      <label class="chip-label" for="eq-bands">Resistance bands</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-rings" value="Rings">
+      <label class="chip-label" for="eq-rings">Rings</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-box" value="Box">
+      <label class="chip-label" for="eq-box">Box</label>
+
+      <input type="checkbox" class="chip-toggle" id="eq-bw" value="No equipment">
+      <label class="chip-label" for="eq-bw">Bodyweight only</label>
+    </div>
+  </div>
+
+  <!-- INJURY FILTER -->
+  <div class="injury-section">
+    <button class="injury-toggle-row" id="injury-toggle-btn" onclick="toggleInjurySection()">
+      + Any injuries or restrictions? (optional)
+    </button>
+    <div class="injury-body" id="injury-body" style="display:none">
+      <span class="injury-label">Avoid movements that stress:</span>
+      <div class="injury-chips">
+        <input type="checkbox" class="injury-toggle" id="inj-lower-back" value="Lower back">
+        <label class="injury-chip-label" for="inj-lower-back">Lower back</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-shoulder" value="Shoulder">
+        <label class="injury-chip-label" for="inj-shoulder">Shoulder</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-knee" value="Knee">
+        <label class="injury-chip-label" for="inj-knee">Knee</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-wrist" value="Wrist">
+        <label class="injury-chip-label" for="inj-wrist">Wrist</label>
+      </div>
+      <div class="injury-chips">
+        <input type="checkbox" class="injury-toggle" id="inj-hip" value="Hip / Groin">
+        <label class="injury-chip-label" for="inj-hip">Hip / Groin</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-ankle" value="Ankle">
+        <label class="injury-chip-label" for="inj-ankle">Ankle</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-neck" value="Neck">
+        <label class="injury-chip-label" for="inj-neck">Neck</label>
+
+        <input type="checkbox" class="injury-toggle" id="inj-elbow" value="Elbow">
+        <label class="injury-chip-label" for="inj-elbow">Elbow</label>
+      </div>
+      <input type="text" class="injury-other-input" id="injury-other"
+        placeholder="Other restrictions (e.g. no jumping, post-surgery...)">
+      <div class="injury-footer">
+        <button class="injury-clear-link" onclick="clearInjuries()">Clear</button>
+        <button class="injury-hide-link" onclick="toggleInjurySection()">− Hide</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="generateProgram()">
+    Generate My Week
+  </button>
+
+</div>
+
+<!-- RECENT PROGRAMS -->
+<div class="recent-programs-section" id="recent-programs-section">
+  <span class="recent-programs-label">Recent Programs</span>
+  <div class="recent-programs-list" id="recent-programs-list"></div>
+</div>
+
+<div class="error-msg" id="error-msg"></div>
+
+<!-- LOADING -->
+<div class="loading-section" id="loading-section" style="display:none">
+  <div class="loader-track"></div>
+  <div class="loading-msg" id="loading-msg">Planning your training week...</div>
+</div>
+
+<!-- PROGRAM OUTPUT -->
+<div class="program-output" id="program-output">
+
+  <!-- PROGRAM HEADER CARD -->
+  <div class="program-header-card">
+    <span class="prog-week-of" id="prog-week-of"></span>
+    <div class="prog-title" id="prog-title"></div>
+    <div class="prog-subtitle" id="prog-subtitle"></div>
+    <div class="prog-meta-pills" id="prog-meta-pills"></div>
+  </div>
+
+  <!-- DAYS ACCORDION -->
+  <div class="days-list" id="days-list"></div>
+
+  <!-- WEEKLY NOTES -->
+  <div class="weekly-notes-section" id="weekly-notes-section" style="display:none">
+    <span class="weekly-notes-label">Coach's notes for the week</span>
+    <div class="weekly-notes-content" id="weekly-notes-content"></div>
+  </div>
+
+  <!-- EMAIL PROGRAM PANEL -->
+  <div class="email-program-panel" id="email-program-panel">
+    <div class="email-program-header">
+      <span class="email-program-title">📬 Email me this program</span>
+      <button type="button" class="email-program-close" onclick="toggleProgramEmailPanel()" aria-label="Close">×</button>
+    </div>
+    <div class="email-program-body" id="email-program-body">
+      <div class="email-wod-form-row">
+        <input type="email" class="email-input" id="email-program-input" placeholder="your@email.com"
+          onkeydown="if(event.key==='Enter')sendProgramEmail()">
+        <button type="button" class="email-btn" id="email-program-btn" onclick="sendProgramEmail()">Send ↗</button>
+      </div>
+      <div class="email-wod-error" id="email-program-error" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- PROGRAM ACTIONS -->
+  <div class="program-actions">
+    <button class="action-btn" onclick="window.print()">Print / Save PDF</button>
+    <button class="action-btn" onclick="toggleProgramEmailPanel()">Email me this</button>
+    <button class="action-btn primary" onclick="resetForm()">Generate New Week</button>
+  </div>
+
+  <!-- WEEKLY SUBSCRIBE BANNER -->
+  <div class="weekly-subscribe-banner" id="weekly-subscribe-banner">
+    <button class="weekly-sub-dismiss" onclick="dismissWeeklyBanner()" aria-label="Dismiss">×</button>
+    <div id="weekly-sub-content">
+      <p class="weekly-sub-heading">Get this delivered every Monday</p>
+      <p class="weekly-sub-sub">A fresh program generated for your setup, straight to your inbox.</p>
+      <div class="weekly-sub-form-row">
+        <input type="email" id="weekly-sub-email" placeholder="your@email.com" autocomplete="email"
+          onkeydown="if(event.key==='Enter')subscribeWeekly()">
+        <button class="weekly-sub-btn" id="weekly-sub-btn" onclick="subscribeWeekly()">Subscribe free</button>
+      </div>
+      <div class="weekly-sub-error" id="weekly-sub-error"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MISSION SECTION -->
+<section class="mission-section reveal">
+  <div class="mission-content">
+    <h2>Free. Forever.</h2>
+    <p>HomeWOD exists to make quality fitness accessible to everyone. No gym required. No expensive app subscription. Just great programming, free forever.</p>
+    <p class="mission-costs">Running HomeWOD costs ~$16/month in AI and hosting fees. If this has helped your training, consider buying us a coffee.</p>
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="coffee-btn">☕ Buy me a coffee</a>
+    <p class="mission-note">Every contribution directly covers API and hosting costs. Nothing more.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Home<span>WOD</span></div>
+  <div class="footer-nav">
+    <a href="/">Generator</a>
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer">Support</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  <div class="footer-bottom">Made with ♥ for home gym athletes</div>
+  <p class="footer-disclosure">Powered by Claude AI · <a href="/privacy">Privacy Policy</a></p>
+</footer>
+
+<script src="js/program.js"></script>
+<script>
+// Scroll reveal for program page
+window.addEventListener('load', function() {
+  var revealEls = document.querySelectorAll('.reveal');
+  var revealObserver = new IntersectionObserver(
+    function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    },
+    { threshold: 0.1 }
+  );
+  revealEls.forEach(function(el) { revealObserver.observe(el); });
+});
+</script>
+</body>
+</html>

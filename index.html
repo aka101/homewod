@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HomeWOD — Free AI Workout Generator</title>
+<meta name="description" content="Generate a personalised home gym workout in seconds. Free AI workout generator — no signup, no equipment needed. CrossFit, beginner, low impact and general fitness modes.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:site_name" content="HomeWOD">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://homewod.fit">
+<meta property="og:title" content="HomeWOD — Free AI Workout Generator">
+<meta property="og:description" content="Generate a personalized home gym workout in seconds. Free forever. No equipment? No problem.">
+<meta property="og:image" content="https://homewod.fit/og-image.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HomeWOD — Free AI Workout Generator">
+<meta name="twitter:description" content="Generate a personalized home gym workout in seconds. Free forever.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.363.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-281ZTL03FV"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-281ZTL03FV')
+</script>
+</head>
+<body>
+
+<!-- SHARED WOD BANNER -->
+<div id="shared-top-banner" style="display:none">
+  <div class="shared-top-inner">
+    <div class="shared-top-text">
+      <span>👀 You're viewing a shared WOD</span>
+      <button class="shared-top-cta" onclick="showFormFromShared()">Generate your own personalised workout free ↓</button>
+    </div>
+    <button class="shared-top-dismiss" onclick="dismissSharedBanner()" aria-label="Dismiss">×</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a href="/" class="logo">HOME<span>WOD</span></a>
+  <div class="header-right">
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="support-btn" onclick="if(typeof gtag!=='undefined'){gtag('event','support_clicked',{event_category:'conversion'})}">
+      <i data-lucide="coffee"></i>
+      <span class="support-text">Support</span>
+    </a>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-bar-item">
+    <i data-lucide="zap"></i>
+    <span class="stats-num">12,400+</span> workouts generated
+  </div>
+  <div class="stats-bar-divider"></div>
+  <div class="stats-bar-item">
+    <i data-lucide="layers"></i>
+    <span class="stats-num">8</span> training modes
+  </div>
+  <div class="stats-bar-divider"></div>
+  <div class="stats-bar-item">
+    <i data-lucide="heart"></i>
+    <span class="stats-num">Always</span> free
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-divider"></div>
+  <div class="hero-left">
+    <div class="hero-eyebrow"><i data-lucide="leaf"></i> AI Workout Generator</div>
+    <h1 class="hero-headline">Train<strong>Smarter.</strong></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Tell us your equipment and any injuries. We build a personalised workout around you. Free forever.</p>
+    <div class="hero-cta-row">
+      <a href="#form" class="hero-cta-primary">Build your workout <i data-lucide="arrow-right"></i></a>
+      <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">Support the project</a>
+    </div>
+    <div class="hero-email-row" id="hero-email-row">
+      <form class="hero-email-form" onsubmit="heroEmailCapture(event)">
+        <input type="email" class="hero-email-input" id="hero-email-input" placeholder="your@email.com" autocomplete="email">
+        <button type="submit" class="hero-email-btn" id="hero-email-btn">Get weekly WODs free</button>
+      </form>
+      <p class="hero-email-note">One email a week. Unsubscribe any time.</p>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card-header">
+      <div class="hero-card-header-icon"><i data-lucide="zap"></i></div>
+      <div class="hero-card-title">Your workout<span>Personalised in seconds</span></div>
+    </div>
+    <div class="hero-feature-list">
+      <div class="hero-feature">
+        <div class="hero-feature-icon"><i data-lucide="dumbbell"></i></div>
+        <div class="hero-feature-body">
+          <div class="hero-feature-title">6 Training Modes</div>
+          <div class="hero-feature-desc">CrossFit to low-impact mobility — shaped to your goals</div>
+        </div>
+      </div>
+      <div class="hero-feature">
+        <div class="hero-feature-icon"><i data-lucide="settings"></i></div>
+        <div class="hero-feature-body">
+          <div class="hero-feature-title">Any Equipment</div>
+          <div class="hero-feature-desc">Barbell to bodyweight only — we adapt to what you have</div>
+        </div>
+      </div>
+      <div class="hero-feature">
+        <div class="hero-feature-icon"><i data-lucide="shield-check"></i></div>
+        <div class="hero-feature-body">
+          <div class="hero-feature-title">Injury-Aware</div>
+          <div class="hero-feature-desc">Works around your restrictions — knees, back, shoulders</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO STRIP -->
+<div class="photo-strip-wrap">
+  <div class="photo-strip">
+    <div class="photo-item">
+      <img src="/images/pexels-mart-production-8033045.jpg" alt="Woman training at home with jump rope" loading="lazy">
+    </div>
+    <div class="photo-item">
+      <img src="/images/pexels-mart-production-8033047.jpg" alt="Man doing push-ups at home" loading="lazy">
+    </div>
+    <div class="photo-item">
+      <img src="/images/pexels-mikhail-nilov-7500432.jpg" alt="Woman stretching at home" loading="lazy" style="object-position: 65% 20%;">
+    </div>
+  </div>
+  <div class="photo-caption">
+    <span class="photo-caption-text">Training at home, on your terms.</span>
+    <div class="photo-caption-rule"></div>
+    <span class="photo-caption-tag">No gym needed</span>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap reveal" id="form">
+  <div class="section-marker">Configure your workout</div>
+
+  <div id="welcome-back-msg" class="welcome-back-msg" style="opacity:0"></div>
+
+  <!-- TRAINING MODE -->
+  <div class="form-section mode-section">
+    <span class="form-section-num">01 · Training style</span>
+    <div class="form-label">I want to train like:</div>
+    <div class="form-hint">Pick one — this shapes the style and language of your workout</div>
+    <div class="mode-grid">
+      <button type="button" class="mode-card" data-mode="crossfit" onclick="selectMode('crossfit')">
+        <span class="mode-icon">🏋️</span>
+        <span class="mode-name">CrossFit Athlete</span>
+        <span class="mode-desc">WODs, AMRAPs, EMOMs</span>
+      </button>
+      <button type="button" class="mode-card selected" data-mode="general" onclick="selectMode('general')">
+        <span class="mode-icon">💪</span>
+        <span class="mode-name">General Fitness</span>
+        <span class="mode-desc">Straightforward workouts</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="beginner" onclick="selectMode('beginner')">
+        <span class="mode-icon">🌱</span>
+        <span class="mode-name">Complete Beginner</span>
+        <span class="mode-desc">Simple, no jargon</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="lowimpact" onclick="selectMode('lowimpact')">
+        <span class="mode-icon">🧘</span>
+        <span class="mode-name">Low Impact &amp; Mobility</span>
+        <span class="mode-desc">Easy on the joints</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="prenatal" onclick="selectMode('prenatal')">
+        <span class="mode-icon">🤰</span>
+        <span class="mode-name">Prenatal</span>
+        <span class="mode-desc">Safe for pregnancy</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="postnatal" onclick="selectMode('postnatal')">
+        <span class="mode-icon">👶</span>
+        <span class="mode-name">Postnatal</span>
+        <span class="mode-desc">Postpartum recovery</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- EQUIPMENT -->
+  <div class="form-section">
+    <span class="form-section-num">02 · Equipment</span>
+    <div class="form-label">Select all you have</div>
+    <div class="form-hint">The workout will be built around what you own</div>
+    <div class="chips" id="equipment-chips">
+      <input type="checkbox" class="chip-toggle" id="eq-barbell" value="Barbell + plates">
+      <label class="chip-label" for="eq-barbell">Barbell + plates</label>
+      <input type="checkbox" class="chip-toggle" id="eq-kb" value="Kettlebells">
+      <label class="chip-label" for="eq-kb">Kettlebells</label>
+      <input type="checkbox" class="chip-toggle" id="eq-db" value="Dumbbells">
+      <label class="chip-label" for="eq-db">Dumbbells</label>
+      <input type="checkbox" class="chip-toggle" id="eq-pullup" value="Pull-up bar">
+      <label class="chip-label" for="eq-pullup">Pull-up bar</label>
+      <input type="checkbox" class="chip-toggle" id="eq-jumprope" value="Jump rope">
+      <label class="chip-label" for="eq-jumprope">Jump rope</label>
+      <input type="checkbox" class="chip-toggle" id="eq-bands" value="Resistance bands">
+      <label class="chip-label" for="eq-bands">Resistance bands</label>
+      <input type="checkbox" class="chip-toggle" id="eq-rings" value="Rings">
+      <label class="chip-label" for="eq-rings">Rings</label>
+      <input type="checkbox" class="chip-toggle" id="eq-box" value="Box">
+      <label class="chip-label" for="eq-box">Box</label>
+      <input type="checkbox" class="chip-toggle" id="eq-bw" value="No equipment">
+      <label class="chip-label" for="eq-bw">Bodyweight only</label>
+    </div>
+  </div>
+
+  <!-- SHOP ROW (affiliate) -->
+  <div class="shop-row" id="shop-row" style="display:none">
+    <div class="shop-row-label">Don't have everything? Shop equipment:</div>
+    <div class="shop-pills" id="shop-pills"></div>
+  </div>
+
+  <!-- SESSION DETAILS -->
+  <div class="form-section">
+    <span class="form-section-num">03 · Session details</span>
+    <div class="form-label">Customise</div>
+    <div class="form-hint">Each can be changed independently — pick what fits today</div>
+    <div class="select-row">
+      <div class="select-group">
+        <span class="form-label">Time</span>
+        <select class="form-select" id="sel-time">
+          <option value="15">15 minutes</option>
+          <option value="20" selected>20 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="45">45 minutes</option>
+          <option value="60">60 minutes</option>
+          <option value="75">75 minutes</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <span class="form-label">Level</span>
+        <select class="form-select" id="sel-level">
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate" selected>Intermediate</option>
+          <option value="Rx / Advanced">Rx / Advanced</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <span class="form-label">Focus</span>
+        <select class="form-select" id="sel-focus">
+          <option value="Full body">Full body</option>
+          <option value="Upper body">Upper body</option>
+          <option value="Lower body">Lower body</option>
+          <option value="Strength">Strength</option>
+          <option value="Cardio / Engine">Cardio</option>
+          <option value="Gymnastics">Gymnastics</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <span class="form-label">Format</span>
+        <select class="form-select" id="sel-format">
+          <option value="any">Surprise me</option>
+          <option value="hiit">AMRAP / For Time</option>
+          <option value="steady">EMOM / Intervals</option>
+          <option value="strength">Straight Sets</option>
+          <option value="circuit">Circuit / Rounds</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- INJURY FILTER -->
+  <div class="injury-section">
+    <button class="injury-toggle-row" id="injury-toggle-btn" onclick="toggleInjurySection()">
+      <i data-lucide="plus"></i> Any injuries or restrictions today? (optional)
+    </button>
+    <div class="injury-body" id="injury-body" style="display:none">
+      <span class="injury-label">Avoid movements that stress:</span>
+      <div class="injury-chips">
+        <input type="checkbox" class="injury-toggle" id="inj-lower-back" value="Lower back">
+        <label class="injury-chip-label" for="inj-lower-back">Lower back</label>
+        <input type="checkbox" class="injury-toggle" id="inj-shoulder" value="Shoulder">
+        <label class="injury-chip-label" for="inj-shoulder">Shoulder</label>
+        <input type="checkbox" class="injury-toggle" id="inj-knee" value="Knee">
+        <label class="injury-chip-label" for="inj-knee">Knee</label>
+        <input type="checkbox" class="injury-toggle" id="inj-wrist" value="Wrist">
+        <label class="injury-chip-label" for="inj-wrist">Wrist</label>
+      </div>
+      <div class="injury-chips">
+        <input type="checkbox" class="injury-toggle" id="inj-hip" value="Hip / Groin">
+        <label class="injury-chip-label" for="inj-hip">Hip / Groin</label>
+        <input type="checkbox" class="injury-toggle" id="inj-ankle" value="Ankle">
+        <label class="injury-chip-label" for="inj-ankle">Ankle</label>
+        <input type="checkbox" class="injury-toggle" id="inj-neck" value="Neck">
+        <label class="injury-chip-label" for="inj-neck">Neck</label>
+        <input type="checkbox" class="injury-toggle" id="inj-elbow" value="Elbow">
+        <label class="injury-chip-label" for="inj-elbow">Elbow</label>
+      </div>
+      <input type="text" class="injury-other-input" id="injury-other"
+        placeholder="Other restrictions (e.g. no jumping, post-surgery...)">
+      <div class="injury-footer">
+        <button class="injury-clear-link" onclick="clearInjuries()">Clear</button>
+        <button class="injury-hide-link" onclick="toggleInjurySection()">− Hide</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="generateWOD()">
+    <i data-lucide="zap"></i>
+    <span class="gen-btn-label">Generate My Workout</span>
+  </button>
+  <p class="wod-social-proof" id="wod-counter-stat"></p>
+</div>
+
+<!-- HISTORY -->
+<div class="history-section" id="history-section" style="display:none">
+  <div class="history-header">
+    <div class="history-title">
+      Recent WODs
+      <span class="history-badge" id="history-count">0</span>
+    </div>
+    <button class="history-clear" onclick="clearHistory()">Clear history</button>
+  </div>
+  <div class="history-list" id="history-list"></div>
+</div>
+
+<div class="error-msg" id="error-msg"></div>
+
+<!-- LOADING -->
+<div class="loading-section" id="loading-section">
+  <div class="breathing-loader"><span class="breathe-label">Inhale</span></div>
+  <div class="loading-msg" id="loading-msg">Building your workout...</div>
+</div>
+
+<!-- WOD OUTPUT -->
+<div class="wod-section" id="wod-section">
+  <div class="wod-card-wrap">
+    <div class="wod-header">
+      <div class="wod-eyebrow">Today's Workout</div>
+      <div class="wod-title" id="wod-title">—</div>
+      <div class="wod-meta-pills" id="wod-meta"></div>
+    </div>
+    <div class="wod-body" id="wod-body"></div>
+
+    <!-- INLINE SUBSCRIBE -->
+    <div class="inline-subscribe-cta" id="inline-subscribe-cta" style="display:none">
+      <div class="inline-sub-headline">Never miss a workout</div>
+      <div class="inline-sub-text">Get a personalised WOD in your inbox every morning — free forever.</div>
+      <div class="inline-sub-form">
+        <input type="email" id="inline-sub-email" placeholder="your@email.com" autocomplete="email"
+          onkeydown="if(event.key==='Enter')inlineSubscribe()">
+        <button id="inline-sub-btn" onclick="inlineSubscribe()">Get daily WODs →</button>
+      </div>
+      <div id="inline-sub-msg" class="inline-sub-msg" style="display:none"></div>
+    </div>
+
+    <!-- AFFILIATE CARD -->
+    <div class="affiliate-card" id="affiliate-card" style="display:none">
+      <div class="affiliate-card-title">Equipment used in this WOD</div>
+      <div class="affiliate-links" id="affiliate-links"></div>
+      <div class="affiliate-tap">Tap to shop on Amazon</div>
+      <div class="affiliate-disclosure">As an Amazon Associate, HomeWOD earns from qualifying purchases.</div>
+    </div>
+
+    <!-- EMAIL WOD PANEL -->
+    <div class="email-wod-panel" id="email-wod-panel">
+      <div class="email-wod-header">
+        <span class="email-wod-title">📬 Send this WOD to your inbox</span>
+        <button type="button" class="email-wod-close" onclick="toggleEmailPanel()" aria-label="Close">×</button>
+      </div>
+      <div class="email-wod-body" id="email-wod-body">
+        <div class="email-wod-form-row">
+          <input type="email" class="email-input" id="email-wod-input" placeholder="your@email.com"
+            onkeydown="if(event.key==='Enter')sendWODEmail()">
+          <button type="button" class="email-btn" id="email-wod-btn" onclick="sendWODEmail()">Send ↗</button>
+        </div>
+        <div class="email-wod-error" id="email-wod-error" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- WOD RATING -->
+    <div class="wod-rating" id="wod-rating" style="display:none">
+      <span class="wod-rating-label">Was this WOD good?</span>
+      <button class="wod-rating-btn" data-rating="up" onclick="rateWOD('up')"><i data-lucide="thumbs-up"></i></button>
+      <button class="wod-rating-btn" data-rating="down" onclick="rateWOD('down')"><i data-lucide="thumbs-down"></i></button>
+      <span class="wod-rating-thanks" style="display:none">Thanks!</span>
+    </div>
+
+    <div class="wod-actions">
+      <button class="action-btn" onclick="copyWOD()"><i data-lucide="copy"></i> Copy WOD</button>
+      <button class="action-btn" onclick="shareWhatsApp()"><i data-lucide="message-circle"></i> WhatsApp</button>
+      <button class="action-btn primary" id="share-btn" onclick="shareLink()"><i data-lucide="link"></i> Share link</button>
+      <button class="action-btn" onclick="toggleEmailPanel()"><i data-lucide="mail"></i> Email me this</button>
+    </div>
+    <div class="wod-regenerate-row">
+      <button class="wod-regenerate-btn" onclick="scrollToForm()"><i data-lucide="refresh-cw"></i> Generate new workout</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING NEW WOD BUTTON -->
+<button class="new-wod-fab" id="new-wod-fab" onclick="scrollToForm()" style="display:none" aria-label="Generate new workout">
+  <i data-lucide="refresh-cw"></i>
+  <span>New WOD</span>
+</button>
+
+<!-- MISSION -->
+<section class="mission-section reveal">
+  <div class="mission-content">
+    <div class="mission-eyebrow">Philosophy</div>
+    <h2>Built to stay free.</h2>
+    <p>HomeWOD generates personalised home workouts using AI — built around your equipment, level, and time. No gym membership. No app subscription. No catch.</p>
+    <p class="mission-support-ask">If it's added a workout to your week, consider supporting it.</p>
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="coffee-btn">
+      <i data-lucide="coffee"></i> Support HomeWOD
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">HOME<span>WOD</span></div>
+  <div class="footer-nav">
+    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer">Support</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  <div class="footer-bottom">Made with <i data-lucide="heart"></i> for home gym athletes · Powered by Claude AI</div>
+  <p class="footer-disclosure">As an Amazon Associate, HomeWOD earns from qualifying purchases.</p>
+</footer>
+
+<!-- SHARE MODAL -->
+<div class="share-modal" id="share-modal" style="display:none">
+  <div class="share-modal-card">
+    <div class="share-modal-title">Share this WOD</div>
+    <input type="text" class="share-modal-input" id="share-modal-url" readonly>
+    <div class="share-modal-actions">
+      <button class="action-btn primary" onclick="copyShareModalUrl()">Copy</button>
+      <button class="action-btn" onclick="closeShareModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TIMER BAR -->
+<div class="timer-bar" id="timer-bar">
+  <div class="timer-left">
+    <div class="timer-display" id="timer-display">00:00</div>
+    <div class="timer-target" id="timer-target">Target: 20 min</div>
+  </div>
+  <div class="timer-controls">
+    <button class="timer-btn" id="timer-toggle" onclick="toggleTimer()">▶ Start</button>
+    <button class="timer-btn timer-reset" id="timer-reset" onclick="resetTimer()" style="display:none"><i data-lucide="rotate-ccw"></i> Reset</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  // Initialise Lucide icons
+  lucide.createIcons();
+  // Trigger reveal animations for static visible sections
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  });
+</script>
+</body>
+</html>
