@@ -775,6 +775,7 @@ async function generateWOD() {
     localStorage.setItem("homewod_last_equipment", JSON.stringify(equipment));
     currentWOD = wod;
     if (wod._wodCount) updateWodCounter(wod._wodCount);
+    updateStreak();
     renderWOD(wod);
 
     wodGeneratedThisSession = true;
@@ -1201,17 +1202,112 @@ function rateWOD(rating) {
   }
 }
 
+// ─── DAILY CHALLENGE ─────────────────────────────────
+function getDailyChallenge() {
+  const d = new Date();
+  const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  const pick = (arr, salt) => arr[Math.abs(seed * salt) % arr.length];
+
+  const modes     = ['crossfit','general','beginner','lowimpact','general','crossfit'];
+  const modeNames = ['CrossFit Athlete','General Fitness','Complete Beginner','Low Impact','General Fitness','CrossFit Athlete'];
+  const times     = [15, 20, 20, 30, 25, 20];
+  const focuses   = ['Full body','Upper body','Lower body','Strength','Cardio','Full body'];
+
+  const modeIdx = Math.abs(seed * 3) % modes.length;
+  return {
+    mode:      modes[modeIdx],
+    modeName:  modeNames[modeIdx],
+    time:      pick(times, 7),
+    focus:     pick(focuses, 13),
+    equipment: ['Bodyweight only']
+  };
+}
+
+function initDailyChallenge() {
+  const ch = getDailyChallenge();
+  const detailsEl = document.getElementById('daily-challenge-details');
+  if (!detailsEl) return;
+  detailsEl.innerHTML = `
+    <span class="daily-challenge-tag">${ch.modeName}</span>
+    <span class="daily-challenge-tag">${ch.time} min</span>
+    <span class="daily-challenge-tag">${ch.focus}</span>
+    <span class="daily-challenge-tag">Bodyweight</span>
+  `;
+}
+
+function acceptDailyChallenge() {
+  const ch = getDailyChallenge();
+
+  // Set training mode
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  const modeBtn = document.querySelector(`.mode-btn[data-mode="${ch.mode}"]`);
+  if (modeBtn) { modeBtn.classList.add('active'); currentMode = ch.mode; }
+
+  // Set time
+  const timeEl = document.getElementById('sel-time');
+  if (timeEl) timeEl.value = ch.time;
+
+  // Set focus
+  const focusEl = document.getElementById('sel-focus');
+  if (focusEl) focusEl.value = ch.focus;
+
+  // Set equipment — bodyweight only
+  document.querySelectorAll('#equipment-chips input[type="checkbox"]').forEach(cb => {
+    cb.checked = cb.value === 'Bodyweight only';
+  });
+  updateShopRow();
+
+  // Scroll to form and generate
+  const form = document.getElementById('form');
+  if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => document.getElementById('generate-btn')?.click(), 600);
+
+  if (typeof gtag !== 'undefined') gtag('event', 'daily_challenge_accepted', { event_category: 'engagement' });
+}
+
+// ─── STREAK ──────────────────────────────────────────
+function updateStreak() {
+  const today = new Date().toDateString();
+  const lastWod = localStorage.getItem('homewod_last_wod_date');
+  let streak = parseInt(localStorage.getItem('homewod_streak') || '0');
+
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+  if (lastWod === today) {
+    // already generated today — no change
+  } else if (lastWod === yesterday) {
+    streak += 1;
+    localStorage.setItem('homewod_streak', streak);
+  } else {
+    streak = 1;
+    localStorage.setItem('homewod_streak', streak);
+  }
+  localStorage.setItem('homewod_last_wod_date', today);
+  renderStreak(streak);
+}
+
+function renderStreak(streak) {
+  if (streak < 2) return;
+  const item = document.getElementById('streak-bar-item');
+  const divider = document.getElementById('streak-divider');
+  const count = document.getElementById('streak-count');
+  if (item && divider && count) {
+    count.textContent = streak;
+    item.style.display = '';
+    divider.style.display = '';
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────
 window.addEventListener("load", () => {
   renderHistory();
   loadFromHash();
   initPersonalization();
 
-  // Hide hero email row if already subscribed
-  if (localStorage.getItem("homewod_subscribed") === "true") {
-    const heroEmailRow = document.getElementById("hero-email-row");
-    if (heroEmailRow) heroEmailRow.style.display = "none";
-  }
+  // Daily challenge + streak
+  initDailyChallenge();
+  const savedStreak = parseInt(localStorage.getItem('homewod_streak') || '0');
+  renderStreak(savedStreak);
 
   // Restore WOD counter from last session
   const savedCount = localStorage.getItem('homewod_wod_count');

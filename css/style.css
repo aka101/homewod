@@ -342,6 +342,62 @@ header {
 }
 .hero-cta-secondary:hover { color: var(--text); border-color: var(--text-muted); }
 
+/* Daily challenge card */
+.daily-challenge-card {
+  margin-top: 24px;
+  background: var(--green);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.daily-challenge-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.daily-challenge-label svg { width: 12px; height: 12px; stroke: rgba(255,255,255,0.5); }
+.daily-challenge-details {
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.daily-challenge-tag {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  color: #fff;
+  font-weight: 500;
+}
+.daily-challenge-btn {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  transition: background 0.15s;
+}
+.daily-challenge-btn:hover { background: #b82e20; }
+.daily-challenge-btn svg { width: 14px; height: 14px; }
+
 /* Hero feature card */
 .hero-card-header {
   background: var(--green);
