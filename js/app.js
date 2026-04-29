@@ -39,6 +39,8 @@ function selectMode(mode) {
   document.querySelectorAll(".mode-card").forEach(card => {
     card.classList.toggle("selected", card.dataset.mode === mode);
   });
+  const disclaimer = document.getElementById("mode-medical-disclaimer");
+  if (disclaimer) disclaimer.style.display = (mode === "prenatal" || mode === "postnatal") ? "block" : "none";
 }
 
 function getModeLabel(mode) {
