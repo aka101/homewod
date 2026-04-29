@@ -341,9 +341,14 @@ function extractMovementName(bulletText) {
   if (/^\d+\s*(×|x)\s*\d+/i.test(raw)) return null;
   if (/^\d+[\-–]\d+\s*(lb|kg|sec|min|reps?|sets?)/i.test(raw)) return null;
   if (/^(hold|hinge|keep|sit|drive|squeeze|brace|engage|maintain|avoid|ensure|lower|raise|extend|flex|rotate|breathe|pause|control|place|position|step|jump|land|reach|grab|grip|plant|anchor|lock|tuck|spread|open|lean|shift|stay|bring|return|imagine|think|feel\s|make sure|check\s|move\s|let\s|allow\s|initiate|stabilise|stabilize)/i.test(raw)) return null;
+  // Skip rep-scheme / tempo annotation lines (e.g. "5 reps @ 31X1 tempo", "Men: 115#")
+  if (/^\d+\s+reps?\s*@/i.test(raw)) return null;
+  if (/^(men|women)\s*:/i.test(raw)) return null;
+  if (/@\s*\d+[A-Za-z]\d+/.test(raw)) return null;
 
   let s = raw
     .replace(/\(.*?\)/g, '')                                                         // remove (notes)
+    .replace(/@\s*\S+.*$/i, '')                                                      // remove tempo notation "@ 31X1 tempo"
     .replace(/\d+[\-–]\d+\s*(lbs?|kg)/gi, '')                                       // remove "35–50 lbs"
     .replace(/^\d+\s+(seconds?|minutes?|secs?|mins?|reps?|sets?)\s+(?:of\s+)?/i, '') // "30 seconds of "
     .replace(/^\d+\s*[×x]\s*/i, '')                                                  // "10 x "
