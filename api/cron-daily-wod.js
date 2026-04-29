@@ -52,6 +52,7 @@ module.exports = async function handler(req, res) {
         html
       });
 
+      await recordWODHistory(email, wod.name);
       sent++;
     } catch (err) {
       console.error(`cron-daily-wod failed for ${email}:`, err.message);
@@ -63,11 +64,74 @@ module.exports = async function handler(req, res) {
   return res.status(200).json({ sent, errors, total: emails.length });
 };
 
+// ─── VARIATION HELPERS ───────────────────────────────
+
+const VARIATION_HINTS = [
+  "Pair upper and lower body movements in supersets.",
+  "Use a descending rep ladder (e.g. 21-15-9 or 10-8-6).",
+  "Build the metcon around a single movement done for high volume with accessory work.",
+  "Use short, intense intervals with generous rest (e.g. 30 on / 30 off or EMOM).",
+  "Use a long, grindy chipper with varied movement patterns.",
+  "Emphasise unilateral movements (single-arm or single-leg variations).",
+  "Pair a heavy hinge movement with a push and a carry or core hold.",
+  "Use a pyramid rep scheme that ascends then descends.",
+  "Focus on posterior chain — glutes, hamstrings and upper back.",
+  "Focus on pressing and pulling supersets with a short conditioning finisher.",
+  "Use a couplet or triplet structure with contrasting movements.",
+  "Build around a single compound movement and support it with accessory work.",
+  "Use tempo or paused reps in the strength block to increase time under tension.",
+  "Keep the metcon simple and brutal — 2 movements, max effort.",
+  "Include a bodyweight conditioning finisher after the main strength work.",
+];
+
+// Produces a 0–1 float that is stable for (date, email) but different across both dimensions
+function seededRandom(dateSeed, emailSeed) {
+  const n = Math.sin(dateSeed * 9301 + emailSeed * 49297 + 233720) * 233280;
+  return n - Math.floor(n);
+}
+
+function getDateSeed() {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
+function emailToSeed(email) {
+  return email.split("").reduce((acc, c, i) => acc + c.charCodeAt(0) * (i + 1), 0);
+}
+
+// Rotates focus by day-of-week so the muscle emphasis changes naturally each day
+const DOW_FOCUS = [
+  "Full body — emphasise conditioning",   // Sun
+  "Lower body and core",                  // Mon
+  "Upper body push and pull",             // Tue
+  "Full body strength",                   // Wed
+  "Lower body posterior chain",           // Thu
+  "Upper body and core finisher",         // Fri
+  "Full body — longer, varied chipper",   // Sat
+];
+
 // ─── WOD GENERATION ──────────────────────────────────
 
 async function generateWOD(sub, apiKey) {
-  const { equipment, level, mode } = sub;
+  const { email, equipment, level, mode } = sub;
   const equipStr = Array.isArray(equipment) ? equipment.join(", ") : "Bodyweight only";
+
+  const dateSeed = getDateSeed();
+  const emailSeed = emailToSeed(email || "");
+  const rand = seededRandom(dateSeed, emailSeed);
+
+  const variationHint = VARIATION_HINTS[Math.floor(rand * VARIATION_HINTS.length)];
+  const focus = DOW_FOCUS[new Date().getDay()];
+
+  // Fetch recent workout names for this subscriber to avoid repeats
+  let recentNames = [];
+  try {
+    recentNames = (await kv.lrange(`daily_history:${email}`, 0, 29)) || [];
+  } catch {}
+
+  const avoidSection = recentNames.length > 0
+    ? `\nRECENT WORKOUTS TO AVOID — do not repeat these names, themes, or primary movement patterns:\n${recentNames.map(n => `- ${n}`).join("\n")}\n`
+    : "";
 
   const modeMap = {
     crossfit: "CrossFit-style workout using proper CrossFit terminology (AMRAP, EMOM, For Time). Include Rx weights for men and women.",
@@ -82,19 +146,21 @@ ${modeMap[mode] || modeMap.general}
 Parameters:
 - Equipment: ${equipStr}
 - Fitness level: ${level || "Intermediate"}
-- Focus: Full body
-- Time: 30 minutes total (5 min warmup, 25 min main piece)
+- Focus: ${focus}
+- Time: 30 minutes total (8 min warmup, 22 min main piece)
 
+VARIATION DIRECTIVE (apply this to make today's workout distinct): ${variationHint}
+${avoidSection}
 Return ONLY valid JSON, no other text:
 {
   "name": "Creative short WOD name (1-3 words, uppercase)",
   "tagline": "One punchy sentence describing the workout feel",
-  "meta": ["30 min", "${level || "Intermediate"}", "Full body"],
+  "meta": ["30 min", "${level || "Intermediate"}", "${focus}"],
   "blocks": [
     {
       "type": "Warmup",
-      "name": "Warmup — 5 min",
-      "content": "Specific warmup movements as a bulleted list using • character.",
+      "name": "Warmup — 8 min",
+      "content": "Specific warmup movements as a bulleted list using • character. Relevant to today's focus.",
       "scaling": ""
     },
     {
@@ -106,7 +172,7 @@ Return ONLY valid JSON, no other text:
     {
       "type": "Coaching notes",
       "name": "Strategy",
-      "content": "2 coaching tips using • character.",
+      "content": "2-3 coaching tips using • character.",
       "scaling": ""
     }
   ]
@@ -122,7 +188,7 @@ Return ONLY valid JSON, no other text:
       },
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 1200,
+        max_tokens: 1800,
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -135,6 +201,15 @@ Return ONLY valid JSON, no other text:
   } catch {
     return null;
   }
+}
+
+// Stores the workout name in a per-subscriber history list (capped at 30 entries)
+async function recordWODHistory(email, wodName) {
+  try {
+    const key = `daily_history:${email}`;
+    await kv.lpush(key, wodName);
+    await kv.ltrim(key, 0, 29);
+  } catch {}
 }
 
 // ─── EMAIL HTML ───────────────────────────────────────
