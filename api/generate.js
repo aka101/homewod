@@ -164,6 +164,7 @@ function getTimeStructureInstruction(time) {
 
 Use these time estimates per element:
 - Warmup: 8-10 minutes (always include)
+- Equipment setup / barbell or dumbbell weight changes: 2-3 minutes (ALWAYS include this if barbells or dumbbells are used — do not skip it)
 - Per strength set (including rest): 3-4 minutes
 - AMRAP / For Time metcon: exactly as stated
 - EMOM: exactly as stated

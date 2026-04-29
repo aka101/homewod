@@ -80,13 +80,13 @@
     <div class="hero-eyebrow"><i data-lucide="leaf"></i> AI Workout Generator</div>
     <h1 class="hero-headline">Train<strong>Smarter.</strong></h1>
     <div class="hero-rule"></div>
-    <p class="hero-sub">Tell us your equipment and any injuries. We build a personalised workout around you. Free forever.</p>
+    <p class="hero-sub">Tell us your equipment and any injuries. We build a personalised WOD <span class="wod-explainer">(Workout of the Day)</span> around you. Free forever.</p>
     <div class="hero-cta-row">
       <a href="#form" class="hero-cta-primary">Build your workout <i data-lucide="arrow-right"></i></a>
       <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">Support the project</a>
     </div>
     <div class="daily-challenge-card" id="daily-challenge-card">
-      <div class="daily-challenge-label"><i data-lucide="calendar"></i> Today's Challenge</div>
+      <div class="daily-challenge-label"><i data-lucide="zap"></i> Today's Challenge <span class="daily-challenge-badge">NEW</span></div>
       <div class="daily-challenge-details" id="daily-challenge-details"></div>
       <button class="daily-challenge-btn" id="daily-challenge-btn" onclick="acceptDailyChallenge()">Accept the challenge <i data-lucide="arrow-right"></i></button>
     </div>
@@ -152,7 +152,7 @@
   <div class="form-section mode-section">
     <span class="form-section-num">01 · Training style</span>
     <div class="form-label">I want to train like:</div>
-    <div class="form-hint">Pick one — this shapes the style and language of your workout</div>
+    <div class="form-hint">This shapes the <strong>style and language</strong> of your workout — not the difficulty. You set the intensity separately in Step 03.</div>
     <div class="mode-grid">
       <button type="button" class="mode-card" data-mode="crossfit" onclick="selectMode('crossfit')">
         <span class="mode-icon">🏋️</span>
@@ -241,7 +241,7 @@
         </select>
       </div>
       <div class="select-group">
-        <span class="form-label">Level</span>
+        <span class="form-label">Level <span class="form-label-hint">— sets loads &amp; reps</span></span>
         <select class="form-select" id="sel-level">
           <option value="Beginner">Beginner</option>
           <option value="Intermediate" selected>Intermediate</option>
@@ -451,6 +451,7 @@
     <div class="timer-target" id="timer-target">Target: 20 min</div>
   </div>
   <div class="timer-controls">
+    <span class="timer-hint">Self-paced — start when you're ready</span>
     <button class="timer-btn" id="timer-toggle" onclick="toggleTimer()">▶ Start</button>
     <button class="timer-btn timer-reset" id="timer-reset" onclick="resetTimer()" style="display:none"><i data-lucide="rotate-ccw"></i> Reset</button>
   </div>

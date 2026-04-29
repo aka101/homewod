@@ -366,19 +366,52 @@ function extractMovementName(bulletText) {
   return s.split(/\s+/).slice(0, 4).join(' ').trim();
 }
 
+const ABBR_MAP = {
+  'AMRAP':    'As Many Rounds (or Reps) As Possible',
+  'EMOM':     'Every Minute On the Minute',
+  'For Time': 'Complete the workout as fast as possible',
+  'RFT':      'Rounds For Time',
+  'WOD':      'Workout of the Day',
+  'HIIT':     'High Intensity Interval Training',
+  'HSPU':     'Handstand Push-Up',
+  'TTB':      'Toes to Bar',
+  'T2B':      'Toes to Bar',
+  'DU':       'Double Unders',
+  'OHS':      'Overhead Squat',
+  'C&J':      'Clean and Jerk',
+  'RDL':      'Romanian Deadlift',
+  'KB':       'Kettlebell',
+  'DB':       'Dumbbell',
+  'BB':       'Barbell',
+  'Rx':       'As prescribed — standard weight and movement',
+  'GHD':      'Glute Ham Developer',
+  'MU':       'Muscle Up',
+  'RPE':      'Rate of Perceived Exertion (1–10 effort scale)',
+};
+
+function expandAbbreviations(text) {
+  let result = text;
+  for (const [abbr, definition] of Object.entries(ABBR_MAP)) {
+    const escaped = abbr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`\\b${escaped}\\b`, 'g');
+    result = result.replace(regex, `<abbr title="${definition}">${abbr}</abbr>`);
+  }
+  return result;
+}
+
 function formatBlockWithDemos(content, showDemos = true) {
   return content.split('\n').map(line => {
     const trimmed = line.trim();
     if (!trimmed) return '';
     if (!trimmed.startsWith('•')) {
-      return `<div class="block-struct-line">${trimmed}</div>`;
+      return `<div class="block-struct-line">${expandAbbreviations(trimmed)}</div>`;
     }
     const bulletText = trimmed.slice(1).trim();
     const movement = extractMovementName(bulletText);
     const demoLink = (showDemos && movement)
       ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(movement)}" target="_blank" rel="noopener">▶ how to</a>`
       : '';
-    return `<div class="bullet-row"><div class="bullet-text">• ${bulletText}${demoLink}</div></div>`;
+    return `<div class="bullet-row"><div class="bullet-text">• ${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
   }).filter(Boolean).join('');
 }
 

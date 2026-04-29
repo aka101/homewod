@@ -397,6 +397,23 @@ header {
 }
 .daily-challenge-btn:hover { background: #b82e20; }
 .daily-challenge-btn svg { width: 14px; height: 14px; }
+.daily-challenge-badge {
+  display: inline-block;
+  background: var(--amber);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-left: 6px;
+  animation: badge-pulse 2s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
 
 /* Hero feature card */
 .hero-card-header {
@@ -1163,6 +1180,27 @@ header {
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+abbr[title] {
+  text-decoration: underline dotted var(--text-muted);
+  cursor: help;
+}
+.wod-explainer {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+.form-label-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.timer-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-right: 12px;
+  font-family: var(--font-sans);
 }
 .inline-demo-btn {
   font-size: 10px;
