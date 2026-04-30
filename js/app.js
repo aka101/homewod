@@ -399,19 +399,68 @@ function expandAbbreviations(text) {
   return result;
 }
 
+function extractExerciseNameFromHeader(line) {
+  // Extract "Glute Bridge" from "A) Glute Bridge — 3 sets × 12 reps"
+  let s = line
+    .replace(/^[A-Z]\)\s*/i, '')
+    .replace(/\(.*?\)/g, '')
+    .replace(/\s*[—–-]\s*\d.*$/, '')
+    .trim();
+  if (!s || s.length < 3) return null;
+  return s.split(/\s+/).slice(0, 4).join(' ').replace(/[,;:\[\]]/g, '').trim();
+}
+
+function makeCheckBtn(targetSelector) {
+  return `<button class="ex-check" onclick="var r=this.closest('${targetSelector}');this.classList.toggle('checked');r&&r.classList.toggle('done');updateProgress()" aria-label="Mark complete"></button>`;
+}
+
+function updateProgress() {
+  const body = document.getElementById('wod-body');
+  const bar = document.getElementById('wod-progress');
+  const fill = document.getElementById('progress-bar-fill');
+  const label = document.getElementById('progress-label');
+  if (!body || !bar || !fill || !label) return;
+  const total = body.querySelectorAll('.ex-check').length;
+  if (total === 0) { bar.style.display = 'none'; return; }
+  const done = body.querySelectorAll('.ex-check.checked').length;
+  const pct = Math.round((done / total) * 100);
+  bar.style.display = 'block';
+  fill.style.width = pct + '%';
+  bar.classList.toggle('progress-complete', done === total);
+  label.textContent = done === total ? 'Workout complete!' : `${done} / ${total} exercises done`;
+}
+
 function formatBlockWithDemos(content, showDemos = true) {
+  let inExerciseBlock = false;
   return content.split('\n').map(line => {
     const trimmed = line.trim();
     if (!trimmed) return '';
     if (!trimmed.startsWith('•')) {
+      const isExerciseHeader = /^[A-Z]\)\s+\S/i.test(trimmed);
+      if (isExerciseHeader) {
+        inExerciseBlock = true;
+        const dashMatch = trimmed.match(/^(.+?)\s+[—–-]\s+(.+)$/);
+        const label = dashMatch ? dashMatch[1] : trimmed;
+        const scheme = dashMatch ? dashMatch[2] : '';
+        const schemePill = scheme ? `<span class="exercise-scheme">${expandAbbreviations(scheme)}</span>` : '';
+        const name = extractExerciseNameFromHeader(trimmed);
+        const demoLink = (showDemos && name)
+          ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name)}" target="_blank" rel="noopener">▶ how to</a>`
+          : '';
+        return `<div class="exercise-row">${makeCheckBtn('.exercise-row')}<span class="exercise-label">${expandAbbreviations(label)}</span>${schemePill}${demoLink}</div>`;
+      }
+      inExerciseBlock = false;
       return `<div class="block-struct-line">${expandAbbreviations(trimmed)}</div>`;
     }
     const bulletText = trimmed.slice(1).trim();
+    if (inExerciseBlock) {
+      return `<div class="bullet-row cue-row"><div class="bullet-text">• ${expandAbbreviations(bulletText)}</div></div>`;
+    }
     const movement = extractMovementName(bulletText);
     const demoLink = (showDemos && movement)
       ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(movement)}" target="_blank" rel="noopener">▶ how to</a>`
       : '';
-    return `<div class="bullet-row"><div class="bullet-text">• ${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
+    return `<div class="bullet-row">${makeCheckBtn('.bullet-row')}<div class="bullet-text">${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
   }).filter(Boolean).join('');
 }
 
@@ -884,6 +933,8 @@ function renderWOD(wod, isShared = false) {
         ` : ""}
       </div>`;
   }).join("");
+
+  updateProgress();
 
   // Staggered reveal of wod blocks
   const revealBlocks = bodyEl.querySelectorAll('.wod-block.reveal');

@@ -1205,8 +1205,22 @@ header {
   white-space: pre-line;
 }
 .block-content strong { font-weight: 600; color: var(--green); }
-.bullet-row { margin: 5px 0; }
+
+/* AMRAP/For Time bullet rows */
+.bullet-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0;
+}
 .bullet-text { line-height: 1.75; }
+.bullet-row.done .bullet-text { opacity: 0.35; text-decoration: line-through; }
+
+/* Technique cue bullets under exercise headers */
+.cue-row { padding-left: 4px; margin: 2px 0; }
+.cue-row .bullet-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* Section label lines (AMRAP, EMOM headers etc.) */
 .block-struct-line {
   font-weight: 700;
   color: var(--green);
@@ -1216,6 +1230,100 @@ header {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+
+/* Straight Sets exercise rows */
+.exercise-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  padding: 10px 12px;
+  background: var(--green-pale);
+  border: 1px solid var(--green-light);
+  border-radius: 6px;
+}
+.exercise-label {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+}
+.exercise-scheme {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--green);
+  background: var(--green-light);
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.exercise-row.done .exercise-label,
+.exercise-row.done .exercise-scheme { opacity: 0.35; text-decoration: line-through; }
+.exercise-row.done .inline-demo-btn { opacity: 0.2; pointer-events: none; }
+
+/* Checkbox button */
+.ex-check {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s, border-color 0.15s;
+  margin-top: 2px;
+}
+.ex-check:hover { border-color: var(--green-mid); }
+.ex-check.checked { background: var(--green); border-color: var(--green); }
+.ex-check.checked::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(0px, -1px);
+  display: block;
+}
+.exercise-row .ex-check { margin-top: 0; }
+
+/* Progress bar */
+.wod-progress {
+  padding: 14px 3rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.progress-bar-wrap {
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.35s ease;
+}
+.progress-complete .progress-bar-fill { background: var(--green-mid); }
+.progress-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+.progress-complete .progress-label { color: var(--green); }
 abbr[title] {
   text-decoration: underline dotted var(--text-muted);
   cursor: help;
