@@ -141,9 +141,8 @@ function renderHistory() {
       : "";
 
     const blocks = (entry.blocks || []).map(block => {
-      const formattedContent = block.content
-        .replace(/•/g, "<br>•")
-        .replace(/\n/g, "<br>");
+      const isCoaching = block.type === "Coaching notes";
+      const formattedContent = formatBlockWithDemos(block.content, !isCoaching, entry.id);
       return `
         <div class="wod-block">
           <div class="block-type">${block.type}</div>
@@ -183,6 +182,38 @@ function renderHistory() {
   }).join("");
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
+
+  // Restore checked checkbox state for each history entry
+  history.forEach(entry => {
+    if (!entry.checkedBoxes || !entry.checkedBoxes.length) return;
+    const bodyEl = document.getElementById(`history-body-${entry.id}`);
+    if (!bodyEl) return;
+    const btns = bodyEl.querySelectorAll('.ex-check');
+    entry.checkedBoxes.forEach(i => {
+      if (!btns[i]) return;
+      btns[i].classList.add('checked');
+      const row = btns[i].closest('.exercise-row') || btns[i].closest('.bullet-row');
+      if (row) row.classList.add('done');
+    });
+  });
+}
+
+function updateHistoryEntryProgress(entryId) {
+  const bodyEl = document.getElementById(`history-body-${entryId}`);
+  if (!bodyEl) return;
+  const allBtns = Array.from(bodyEl.querySelectorAll('.ex-check'));
+  const total = allBtns.length;
+  const done = allBtns.filter(b => b.classList.contains('checked')).length;
+  const h = getHistory();
+  const idx = h.findIndex(e => e.id === entryId);
+  if (idx !== -1) {
+    h[idx].progressDone = done;
+    h[idx].progressTotal = total;
+    h[idx].completed = done === total && total > 0;
+    h[idx].checkedBoxes = allBtns.map((b, i) => b.classList.contains('checked') ? i : -1).filter(i => i !== -1);
+    localStorage.setItem("homewod_history", JSON.stringify(h));
+  }
+  updateHistoryProgressBadge(entryId, done, total);
 }
 
 function toggleHistoryRow(id) {
@@ -413,8 +444,9 @@ function extractExerciseNameFromHeader(line) {
   return s.split(/\s+/).slice(0, 4).join(' ').replace(/[,;:\[\]]/g, '').trim();
 }
 
-function makeCheckBtn(targetSelector) {
-  return `<button class="ex-check" onclick="var r=this.closest('${targetSelector}');this.classList.toggle('checked');r&&r.classList.toggle('done');updateProgress()" aria-label="Mark complete"></button>`;
+function makeCheckBtn(targetSelector, historyId = null) {
+  const updateFn = historyId != null ? `updateHistoryEntryProgress(${historyId})` : `updateProgress()`;
+  return `<button class="ex-check" onclick="var r=this.closest('${targetSelector}');this.classList.toggle('checked');r&&r.classList.toggle('done');${updateFn}" aria-label="Mark complete"></button>`;
 }
 
 function updateProgress() {
@@ -455,7 +487,7 @@ function updateHistoryProgressBadge(entryId, done, total) {
   badge.classList.toggle('history-badge-complete', done === total);
 }
 
-function formatBlockWithDemos(content, showDemos = true) {
+function formatBlockWithDemos(content, showDemos = true, historyId = null) {
   let inExerciseBlock = false;
   return content.split('\n').map(line => {
     const trimmed = line.trim();
@@ -472,7 +504,7 @@ function formatBlockWithDemos(content, showDemos = true) {
         const demoLink = (showDemos && name)
           ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name)}" target="_blank" rel="noopener">▶ how to</a>`
           : '';
-        const checkBtn = showDemos ? makeCheckBtn('.exercise-row') : '';
+        const checkBtn = showDemos ? makeCheckBtn('.exercise-row', historyId) : '';
         return `<div class="exercise-row">${checkBtn}<span class="exercise-label">${expandAbbreviations(label)}</span>${schemePill}${demoLink}</div>`;
       }
       inExerciseBlock = false;
@@ -486,7 +518,7 @@ function formatBlockWithDemos(content, showDemos = true) {
     const demoLink = (showDemos && movement)
       ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(movement)}" target="_blank" rel="noopener">▶ how to</a>`
       : '';
-    const checkBtn = showDemos ? makeCheckBtn('.bullet-row') : '';
+    const checkBtn = showDemos ? makeCheckBtn('.bullet-row', historyId) : '';
     return `<div class="bullet-row">${checkBtn}<div class="bullet-text">${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
   }).filter(Boolean).join('');
 }
