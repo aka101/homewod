@@ -6,6 +6,7 @@ let expandedHistoryId = null;
 let currentMode = "general";
 let wodGeneratedThisSession = false;
 let currentMovements = [];
+let currentHistoryEntryId = null;
 
 // ─── AFFILIATE LINKS ─────────────────────────────────
 const AFFILIATE_LINKS = [
@@ -84,6 +85,7 @@ function saveToHistory(wod, params) {
   history.unshift(entry);
   while (history.length > HISTORY_LIMIT) history.pop();
   localStorage.setItem("homewod_history", JSON.stringify(history));
+  currentHistoryEntryId = entryId;
   renderHistory();
 
   // Background save to Redis — fire-and-forget, patches shareId back into entry
@@ -158,6 +160,7 @@ function renderHistory() {
             <div class="history-pills">${equipPills}${modePill}</div>
           </div>
           <div class="history-row-right">
+            ${entry.completed ? `<span class="history-completed-badge">✓ Done</span>` : ''}
             <span class="history-date">${entry.date}</span>
             <span class="history-chevron" id="chevron-${entry.id}">›</span>
           </div>
@@ -426,8 +429,20 @@ function updateProgress() {
   const pct = Math.round((done / total) * 100);
   bar.style.display = 'block';
   fill.style.width = pct + '%';
-  bar.classList.toggle('progress-complete', done === total);
-  label.textContent = done === total ? 'Workout complete!' : `${done} / ${total} exercises done`;
+  const isComplete = done === total;
+  bar.classList.toggle('progress-complete', isComplete);
+  label.textContent = isComplete ? 'Workout complete!' : `${done} / ${total} exercises done`;
+  if (isComplete && currentHistoryEntryId) markHistoryComplete(currentHistoryEntryId);
+}
+
+function markHistoryComplete(entryId) {
+  const h = getHistory();
+  const idx = h.findIndex(e => e.id === entryId);
+  if (idx !== -1 && !h[idx].completed) {
+    h[idx].completed = true;
+    localStorage.setItem("homewod_history", JSON.stringify(h));
+    renderHistory();
+  }
 }
 
 function formatBlockWithDemos(content, showDemos = true) {
@@ -447,7 +462,8 @@ function formatBlockWithDemos(content, showDemos = true) {
         const demoLink = (showDemos && name)
           ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(name)}" target="_blank" rel="noopener">▶ how to</a>`
           : '';
-        return `<div class="exercise-row">${makeCheckBtn('.exercise-row')}<span class="exercise-label">${expandAbbreviations(label)}</span>${schemePill}${demoLink}</div>`;
+        const checkBtn = showDemos ? makeCheckBtn('.exercise-row') : '';
+        return `<div class="exercise-row">${checkBtn}<span class="exercise-label">${expandAbbreviations(label)}</span>${schemePill}${demoLink}</div>`;
       }
       inExerciseBlock = false;
       return `<div class="block-struct-line">${expandAbbreviations(trimmed)}</div>`;
@@ -460,7 +476,8 @@ function formatBlockWithDemos(content, showDemos = true) {
     const demoLink = (showDemos && movement)
       ? `<a class="inline-demo-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(movement)}" target="_blank" rel="noopener">▶ how to</a>`
       : '';
-    return `<div class="bullet-row">${makeCheckBtn('.bullet-row')}<div class="bullet-text">${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
+    const checkBtn = showDemos ? makeCheckBtn('.bullet-row') : '';
+    return `<div class="bullet-row">${checkBtn}<div class="bullet-text">${expandAbbreviations(bulletText)}${demoLink}</div></div>`;
   }).filter(Boolean).join('');
 }
 
@@ -1414,4 +1431,11 @@ window.addEventListener("load", () => {
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") { closeShareModal(); }
   });
+
+  const backToTop = document.getElementById("back-to-top");
+  if (backToTop) {
+    window.addEventListener("scroll", () => {
+      backToTop.classList.toggle("visible", window.scrollY > 400);
+    }, { passive: true });
+  }
 });

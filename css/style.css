@@ -1324,6 +1324,49 @@ header {
   font-family: var(--font-sans);
 }
 .progress-complete .progress-label { color: var(--green); }
+
+/* Back to top button */
+#back-to-top {
+  position: fixed;
+  bottom: 28px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  z-index: 900;
+}
+#back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#back-to-top:hover { background: var(--green-mid); }
+#back-to-top svg { width: 18px; height: 18px; stroke-width: 2.5; }
+
+.history-completed-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-pale);
+  border: 1px solid var(--green-light);
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-family: var(--font-sans);
+}
 abbr[title] {
   text-decoration: underline dotted var(--text-muted);
   cursor: help;
