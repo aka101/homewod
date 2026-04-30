@@ -159,7 +159,7 @@ function renderHistory() {
             <div class="history-pills">${equipPills}${modePill}</div>
           </div>
           <div class="history-row-right">
-            <span class="history-completed-badge${entry.completed ? ' history-badge-complete' : ''}" id="history-progress-${entry.id}" ${(!entry.progressDone || entry.progressDone === 0) ? 'style="display:none"' : ''}>${entry.completed ? '✓ Done' : `${entry.progressDone || 0} / ${entry.progressTotal || 0}`}</span>
+            <span class="history-completed-badge${entry.completed ? ' history-badge-complete' : (entry.progressDone > 0 ? ' history-badge-partial' : '')}" id="history-progress-${entry.id}" ${(!entry.progressDone || entry.progressDone === 0) ? 'style="display:none"' : ''}>${entry.completed ? '✓ Done' : `${entry.progressDone || 0} / ${entry.progressTotal || 0}`}</span>
             <span class="history-date">${entry.date}</span>
             <span class="history-chevron" id="chevron-${entry.id}">›</span>
           </div>
@@ -484,7 +484,8 @@ function updateHistoryProgressBadge(entryId, done, total) {
   if (done === 0) { badge.style.display = 'none'; return; }
   badge.style.display = '';
   badge.textContent = done === total ? '✓ Done' : `${done} / ${total}`;
-  badge.classList.toggle('history-badge-complete', done === total);
+  badge.classList.remove('history-badge-partial', 'history-badge-complete');
+  badge.classList.add(done === total ? 'history-badge-complete' : 'history-badge-partial');
 }
 
 function formatBlockWithDemos(content, showDemos = true, historyId = null) {
