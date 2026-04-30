@@ -160,7 +160,7 @@ function renderHistory() {
             <div class="history-pills">${equipPills}${modePill}</div>
           </div>
           <div class="history-row-right">
-            ${entry.completed ? `<span class="history-completed-badge">✓ Done</span>` : ''}
+            <span class="history-completed-badge${entry.completed ? ' history-badge-complete' : ''}" id="history-progress-${entry.id}" ${(!entry.progressDone || entry.progressDone === 0) ? 'style="display:none"' : ''}>${entry.completed ? '✓ Done' : `${entry.progressDone || 0} / ${entry.progressTotal || 0}`}</span>
             <span class="history-date">${entry.date}</span>
             <span class="history-chevron" id="chevron-${entry.id}">›</span>
           </div>
@@ -432,17 +432,27 @@ function updateProgress() {
   const isComplete = done === total;
   bar.classList.toggle('progress-complete', isComplete);
   label.textContent = isComplete ? 'Workout complete!' : `${done} / ${total} exercises done`;
-  if (isComplete && currentHistoryEntryId) markHistoryComplete(currentHistoryEntryId);
+  if (currentHistoryEntryId) saveHistoryProgress(currentHistoryEntryId, done, total);
 }
 
-function markHistoryComplete(entryId) {
+function saveHistoryProgress(entryId, done, total) {
   const h = getHistory();
   const idx = h.findIndex(e => e.id === entryId);
-  if (idx !== -1 && !h[idx].completed) {
-    h[idx].completed = true;
-    localStorage.setItem("homewod_history", JSON.stringify(h));
-    renderHistory();
-  }
+  if (idx === -1) return;
+  h[idx].progressDone = done;
+  h[idx].progressTotal = total;
+  h[idx].completed = done === total;
+  localStorage.setItem("homewod_history", JSON.stringify(h));
+  updateHistoryProgressBadge(entryId, done, total);
+}
+
+function updateHistoryProgressBadge(entryId, done, total) {
+  const badge = document.getElementById(`history-progress-${entryId}`);
+  if (!badge) return;
+  if (done === 0) { badge.style.display = 'none'; return; }
+  badge.style.display = '';
+  badge.textContent = done === total ? '✓ Done' : `${done} / ${total}`;
+  badge.classList.toggle('history-badge-complete', done === total);
 }
 
 function formatBlockWithDemos(content, showDemos = true) {
