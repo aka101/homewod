@@ -1,5 +1,7 @@
 const { Redis } = require("@upstash/redis");
 
+const RATE_LIMIT = 10; // requests per hour per IP
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -14,6 +16,21 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: "ANTHROPIC_API_KEY is not configured" });
+  }
+
+  // Rate limiting — 10 requests per hour per IP
+  let kv;
+  try {
+    kv = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
+    const ip = ((req.headers["x-forwarded-for"] || "") + "").split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
+    const rlKey = `rl:gen:${ip}`;
+    const count = await kv.incr(rlKey);
+    if (count === 1) await kv.expire(rlKey, 3600);
+    if (count > RATE_LIMIT) {
+      return res.status(429).json({ error: "You've generated a lot of workouts today! Rest up and try again in an hour." });
+    }
+  } catch {
+    // If Redis is unavailable, allow the request through rather than blocking users
   }
 
   const prompt = buildPrompt({
@@ -68,7 +85,7 @@ module.exports = async function handler(req, res) {
     // Increment global WOD counter — fire-and-forget, never blocks the response
     let wodCount = null;
     try {
-      const kv = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
+      if (!kv) kv = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
       wodCount = await kv.incr("wod_count");
     } catch {}
 

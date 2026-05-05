@@ -643,6 +643,28 @@ async function shareLink() {
   if (typeof gtag !== 'undefined') gtag('event', 'wod_shared', { event_category: 'engagement', event_label: 'link' });
 }
 
+async function shareTwitter() {
+  if (!currentWOD) return;
+  const meta = (currentWOD.meta || []).join(" · ");
+  const text = `Just generated a free ${meta} home workout called "${currentWOD.name}" using @HomeWODfit — try it yourself:`;
+
+  let url = "https://homewod.fit";
+  try {
+    const res = await fetch("/api/wod", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wod: currentWOD })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.url) url = data.url;
+    }
+  } catch {}
+
+  window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, "_blank");
+  if (typeof gtag !== 'undefined') gtag('event', 'wod_shared', { event_category: 'engagement', event_label: 'twitter' });
+}
+
 // ─── HERO EMAIL CAPTURE ───────────────────────────────
 async function heroEmailCapture(e) {
   e.preventDefault();
@@ -1090,6 +1112,42 @@ function toggleScaling(btn) {
   const isOpen = content.classList.contains("open");
   content.classList.toggle("open", !isOpen);
   btn.textContent = isOpen ? btn.dataset.show : btn.dataset.hide;
+}
+
+// ─── TIP MODAL ───────────────────────────────────────
+function openTipModal() {
+  document.getElementById("tip-modal").style.display = "flex";
+  if (typeof gtag !== 'undefined') gtag('event', 'support_clicked', { event_category: 'conversion' });
+}
+
+function closeTipModal() {
+  document.getElementById("tip-modal").style.display = "none";
+  const err = document.getElementById("tip-modal-error");
+  if (err) err.style.display = "none";
+}
+
+async function submitTip(amount) {
+  const btns = document.querySelectorAll(".tip-amount-btn");
+  const errEl = document.getElementById("tip-modal-error");
+  btns.forEach(b => { b.disabled = true; });
+  if (errEl) errEl.style.display = "none";
+
+  try {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || "Couldn't start checkout");
+    }
+  } catch (err) {
+    if (errEl) { errEl.textContent = err.message; errEl.style.display = "block"; }
+    btns.forEach(b => { b.disabled = false; });
+  }
 }
 
 // ─── ERROR ───────────────────────────────────────────

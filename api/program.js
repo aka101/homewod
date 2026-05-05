@@ -1,3 +1,7 @@
+const { Redis } = require("@upstash/redis");
+
+const RATE_LIMIT = 5; // program generation is expensive — 5 per hour per IP
+
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -6,6 +10,20 @@ module.exports = async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: "ANTHROPIC_API_KEY not set" });
+  }
+
+  // Rate limiting — 5 requests per hour per IP
+  try {
+    const kv = new Redis({ url: process.env.KV_REST_API_URL, token: process.env.KV_REST_API_TOKEN });
+    const ip = ((req.headers["x-forwarded-for"] || "") + "").split(",")[0].trim() || req.socket?.remoteAddress || "unknown";
+    const rlKey = `rl:prog:${ip}`;
+    const count = await kv.incr(rlKey);
+    if (count === 1) await kv.expire(rlKey, 3600);
+    if (count > RATE_LIMIT) {
+      return res.status(429).json({ error: "You've generated a lot of programs today! Rest up and try again in an hour." });
+    }
+  } catch {
+    // If Redis is unavailable, allow the request through
   }
 
   const {

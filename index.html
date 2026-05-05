@@ -44,10 +44,10 @@
 <header>
   <a href="/" class="logo">HOME<span>WOD</span></a>
   <div class="header-right">
-    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="support-btn" onclick="if(typeof gtag!=='undefined'){gtag('event','support_clicked',{event_category:'conversion'})}">
+    <button class="support-btn" onclick="openTipModal()">
       <i data-lucide="coffee"></i>
       <span class="support-text">Support</span>
-    </a>
+    </button>
   </div>
 </header>
 
@@ -84,7 +84,7 @@
     <p class="hero-sub">Tell us your equipment and any injuries. We build a personalised WOD <span class="wod-explainer">(Workout of the Day)</span> around you. Free forever.</p>
     <div class="hero-cta-row">
       <a href="#form" class="hero-cta-primary">Build your workout <i data-lucide="arrow-right"></i></a>
-      <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">Support the project</a>
+      <button class="hero-cta-secondary" onclick="openTipModal()">Support the project</button>
     </div>
     <div class="daily-challenge-card" id="daily-challenge-card">
       <div class="daily-challenge-label"><i data-lucide="zap"></i> Today's Challenge <span class="daily-challenge-badge">NEW</span></div>
@@ -378,9 +378,11 @@
     </div>
 
     <div class="wod-actions">
-      <button class="action-btn" onclick="copyWOD()"><i data-lucide="copy"></i> Copy WOD</button>
+      <div class="wod-share-label">Share this workout</div>
+      <button class="action-btn primary" id="share-btn" onclick="shareLink()"><i data-lucide="link"></i> Copy link</button>
+      <button class="action-btn action-btn-x" onclick="shareTwitter()"><svg class="x-logo-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.254 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg> Post to X</button>
       <button class="action-btn" onclick="shareWhatsApp()"><i data-lucide="message-circle"></i> WhatsApp</button>
-      <button class="action-btn primary" id="share-btn" onclick="shareLink()"><i data-lucide="link"></i> Share link</button>
+      <button class="action-btn" onclick="copyWOD()"><i data-lucide="copy"></i> Copy text</button>
       <button class="action-btn" onclick="toggleEmailPanel()"><i data-lucide="mail"></i> Email me this</button>
     </div>
     <div class="wod-regenerate-row">
@@ -402,16 +404,16 @@
     <h2>Built to stay free.</h2>
     <p>HomeWOD generates personalised home workouts using AI — built around your equipment, level, and time. No gym membership. No app subscription. No catch.</p>
     <p class="mission-support-ask">If it's added a workout to your week, consider supporting it.</p>
-    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer" class="coffee-btn">
+    <button class="coffee-btn" onclick="openTipModal()">
       <i data-lucide="coffee"></i> Support HomeWOD
-    </a>
+    </button>
   </div>
 </section>
 
 <footer>
   <div class="footer-logo">HOME<span>WOD</span></div>
   <div class="footer-nav">
-    <a href="https://buymeacoffee.com/homewod" target="_blank" rel="noopener noreferrer">Support</a>
+    <button class="footer-support-btn" onclick="openTipModal()">Support</button>
     <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>
   </div>
@@ -420,8 +422,23 @@
   <p class="footer-disclosure">As an Amazon Associate, HomeWOD earns from qualifying purchases.</p>
 </footer>
 
+<!-- TIP MODAL -->
+<div class="share-modal" id="tip-modal" style="display:none" onclick="if(event.target===this)closeTipModal()">
+  <div class="share-modal-card tip-modal-card">
+    <div class="share-modal-title">Support HomeWOD</div>
+    <p class="tip-modal-sub">Keeps the AI workouts free for everyone.</p>
+    <div class="tip-amounts">
+      <button class="tip-amount-btn" onclick="submitTip(3)">$3</button>
+      <button class="tip-amount-btn" onclick="submitTip(5)">$5</button>
+      <button class="tip-amount-btn" onclick="submitTip(10)">$10</button>
+    </div>
+    <div class="tip-modal-error" id="tip-modal-error" style="display:none"></div>
+    <button class="tip-cancel-btn" onclick="closeTipModal()">Maybe later</button>
+  </div>
+</div>
+
 <!-- SHARE MODAL -->
-<div class="share-modal" id="share-modal" style="display:none">
+<div class="share-modal" id="share-modal" style="display:none" onclick="if(event.target===this)closeShareModal()">
   <div class="share-modal-card">
     <div class="share-modal-title">Share this WOD</div>
     <input type="text" class="share-modal-input" id="share-modal-url" readonly>

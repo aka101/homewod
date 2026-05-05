@@ -1654,6 +1654,18 @@ abbr[title] {
 .action-btn:hover { background: var(--green); color: #fff; border-color: var(--green); }
 .action-btn.primary { background: var(--green); color: #fff; border-color: var(--green); }
 .action-btn.primary:hover { background: var(--green-mid); border-color: var(--green-mid); }
+.action-btn.action-btn-x:hover { background: #000; color: #fff; border-color: #000; }
+.wod-share-label {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: -2px;
+}
+.x-logo-icon { width: 12px; height: 12px; flex-shrink: 0; }
 
 /* ── HISTORY ── */
 #history-section {
@@ -2008,6 +2020,63 @@ footer {
   border-radius: var(--r-sm);
 }
 .timer-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.38); }
+
+/* ── TIP MODAL ── */
+.tip-modal-card { text-align: center; }
+.tip-modal-sub {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: -8px 0 20px;
+}
+.tip-amounts {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.tip-amount-btn {
+  flex: 1;
+  padding: 14px 0;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: 22px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tip-amount-btn:hover:not(:disabled) { background: var(--green); color: #fff; border-color: var(--green); }
+.tip-amount-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.tip-modal-error {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: #c0392b;
+  margin-bottom: 12px;
+}
+.tip-cancel-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+}
+.tip-cancel-btn:hover { color: var(--text); }
+.footer-support-btn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
 
 /* ── SHARE MODAL ── */
 .share-modal {
