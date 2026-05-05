@@ -3,7 +3,7 @@
   "functions": {
     "api/generate.js": {
       "memory": 256,
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "api/program.js": {
       "memory": 256,

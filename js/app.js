@@ -920,11 +920,23 @@ async function generateWOD() {
   }, 4000);
 
   try {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ equipment, time, level, focus, format, injuries, otherRestrictions, mode })
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 55000);
+
+    let response;
+    try {
+      response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ equipment, time, level, focus, format, injuries, otherRestrictions, mode }),
+        signal: controller.signal
+      });
+    } catch (fetchErr) {
+      clearTimeout(timeoutId);
+      if (fetchErr.name === "AbortError") throw new Error("The request timed out — please try again.");
+      throw new Error("Connection failed — check your internet and try again.");
+    }
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       let errMsg = `Server error ${response.status} — please try again`;

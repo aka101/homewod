@@ -181,7 +181,7 @@ function getTimeStructureInstruction(time) {
 
 Use these time estimates per element:
 - Warmup: 8-10 minutes (always include)
-- Equipment setup / barbell or dumbbell weight changes: 2-3 minutes (ALWAYS include this if barbells or dumbbells are used — do not skip it)
+- Equipment setup / weight changes: 2-3 minutes (factor into your time math silently — do NOT output this as a block or mention it in the workout content)
 - Per strength set (including rest): 3-4 minutes
 - AMRAP / For Time metcon: exactly as stated
 - EMOM: exactly as stated
@@ -293,6 +293,12 @@ Generate a complete workout with these parameters:
 - Fitness level: ${level}
 - Focus: ${focus}${focusInstruction ? `\n  ${focusInstruction}` : ""}
 - Format: ${formatInstruction}
+
+CONTENT FORMAT RULES — strictly follow these for the workout block:
+- Strength sets: write as one compact line per exercise, never list sets individually. Use format: "4×8 @ 40# DB, rest 90 sec" not "Set 1: 8 reps, Set 2: 8 reps…"
+- No equipment transition blocks or transition text in the output — omit entirely
+- No inline technique cues attached to exercise names — all coaching tips go in the Coaching notes block only
+- Keep workout content tight — every line should be something the athlete acts on, not explanatory prose
 
 Return ONLY valid JSON in exactly this structure, no other text:
 {
