@@ -1505,6 +1505,13 @@ function renderStreak(streak) {
   }
 }
 
+// Re-enable tip buttons if user navigates back from Stripe (bfcache restore)
+window.addEventListener("pageshow", (e) => {
+  if (e.persisted) {
+    document.querySelectorAll(".tip-amount-btn").forEach(b => { b.disabled = false; });
+  }
+});
+
 // ─── INIT ────────────────────────────────────────────
 window.addEventListener("load", () => {
   renderHistory();
